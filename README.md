@@ -7,7 +7,7 @@ Starring **Pipkin**, a tabby cat in a red Kelantan shirt with gold batik motifs.
 
 ## Play
 
-Open https://nazirulhafiy.github.io/pipkin-quest/ — that's it. No build step,
+Open https://hafiy.my/kracked-quest/ — that's it. No build step,
 no dependencies; everything is drawn in code on a single HTML canvas.
 
 ## Controls

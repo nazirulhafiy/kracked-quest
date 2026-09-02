@@ -23,7 +23,7 @@
 <script>
 "use strict";
 /* ============================================================
-   PIPKIN QUEST — a Mario-like platformer, doodle art edition.
+   KRAKED QUEST — a Mario-like platformer, doodle art edition.
    Same concept (run / jump / stomp / collect / reach the flag),
    different designs (everything drawn in code, no sprites).
    ============================================================ */
@@ -99,6 +99,51 @@ const sfx = {
   over:  ()=>{[392,330,262,196].forEach((f,i)=>setTimeout(()=>beep(f,.25,'sawtooth',.10),i*170));}
 };
 
+/* ---------- background music: bouncy 4-bar doodle loop ----------
+   8th-note step sequencer (32 steps), square-wave melody over an
+   oom-pah triangle bass in C major. Starts on the first gesture. */
+function note(midi, t, dur, type, vol){
+  if(muted) return;
+  try{
+    const a = ac(), o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = 440*Math.pow(2,(midi-69)/12);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t+.015);
+    g.gain.exponentialRampToValueAtTime(.001, t+dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(t); o.stop(t+dur+.05);
+  }catch(e){}
+}
+const MELODY = [           // C major, one entry per 8th note
+  76,79,81,79,  77,81,84,81,        // E G A G | F A C6 A
+  83,81,79,76,  74,77,76,72,        // B A G E | D F E C
+  76,79,81,79,  77,81,84,81,        // repeat the sunny phrase...
+  83,84,86,84,  83,81,79,0          // ...and a little lift home
+];
+const BASSLINE = [         // oom-pah: root on the beat, fifth off it
+  48,0,55,0, 48,0,55,0,             // C
+  53,0,60,0, 53,0,60,0,             // F
+  48,0,55,0, 48,0,55,0,             // C
+  55,0,62,0, 48,0,55,0              // G -> C turnaround
+];
+let musicTimer = null, nextNoteTime = 0, musicPos = 0;
+const BPM = 108;
+function scheduleMusic(){
+  const a = ac();
+  while(nextNoteTime < a.currentTime + .18){
+    const step = musicPos % 32;
+    if(MELODY[step])   note(MELODY[step],   nextNoteTime, .21, 'square',   .035);
+    if(BASSLINE[step]) note(BASSLINE[step], nextNoteTime, .25, 'triangle', .05);
+    musicPos++; nextNoteTime += (60/BPM)/2;
+  }
+}
+function startMusic(){
+  if(musicTimer) return;
+  try{ ac().resume(); }catch(e){}
+  nextNoteTime = ac().currentTime + .1;
+  musicTimer = setInterval(scheduleMusic, 40);
+}
+
 /* ---------- doodle style helpers ---------- */
 const INK = '#1c1c1c';
 function ink(w){ ctx.strokeStyle=INK; ctx.lineWidth=w; ctx.lineJoin='round'; ctx.lineCap='round'; }
@@ -138,35 +183,35 @@ const LEVELS = [
 {
   name:"Sunny Slopes",
   rows:[
-"                                                                                                                    ",
-"                                                                                                                    ",
-"                                                                                                                    ",
-"                    oo                                     o o o                                                   ",
-"                                                  o o      BBBBB            o o                                   ",
-"            ??             ??                           b                    BBBBB              ??                ",
-"                                       BBB                                     e                    FF              ",
-"        o            e            o        e          BB      ??   o    BB                  BB          BFF   FF    ",
-"               B    BBB      BB          BBB         BB     BBB      B  BB     e   ^^^       BB    e    BFF   FF    ",
-"  P                                     o                             B  BB          ^^^                          ",
-"#######  ####      #########   ###   #######  ####  #########  ##   ######   #####  ####    ###########  ###########",
-"#######  ####      #########   ###   #######  ####  #########  ##   ######   #####  ####    ###########  ###########",
+"",
+"",
+"",
+"                                                              o",
+"                                                            BBBBB",
+"                                      o     b          o o",
+"                                                       BBB",
+"      ??        ??                   BBB            ??",
+"           o              o       BB                        o   o                o",
+"  P                            BB BB      e                            ^^    e          e   ??      BB BB BBB   F",
+"##########   ############   ##################   ##############   ##############   #####################################",
+"##########   ############   ##################   ##############   ##############   #####################################"
   ]
 },
 {
   name:"Cloudtop Climb",
   rows:[
-"                                                                                                    ",
-"                            o o o                              o o o                                ",
-"                           BBBBB                             o BBBBB o              o o              ",
-"        ??                       o         ??      BBB                      B       BBBB      FF    ",
-"             oo        b               b        o        e      ??            e             BFF    FF",
-"   P      BB      BBB        ??        BB     BBB    BB       BBB      BB          ^^^      BFF    FF",
-"  ###     ##             BB       BB   ##          B BB   B          BB    e     ^^^^^^^    ######  ",
-"  ###     ##      e      ##  e   ##    ##     e    B BB   B     e    ##  BBB     ^^^^^^^    ######  ",
-"#######   ##   ########  ##  ##  ##    ##  ######## BB ##  B  #######  ##  #     ^^^^^^^    ######  ",
-"#######   ##   ########  ##  ##  ##    ##  ######## BB ##  B  #######  ##  #     ^^^^^^^    ######  ",
-"#######   ##   ########  ##  ##  ##    ##  ######## BB ##  B  #######  ##  #     ^^^^^^^    ######  ",
-"#######   ##   ########  ##  ##  ##    ##  ######## BB ##  B  #######  ##  #     ^^^^^^^    ######  ",
+"",
+"",
+"",
+"",
+"                          o o                                        oo",
+"                      o                  oo                          BB",
+"                      e                  BB b                                 b",
+"                      BB              BB                          BB            ??                      BBB",
+"               o      BB        o     BB       o         BB o",
+"  P                   BB           BB BB            ^^   BB    BB BB                e     e   ^^  BB BB       F",
+"##############   ##############   ############   ##########   ###########   ####################################",
+"##############   ##############   ############   ##########   ###########   ####################################"
   ]
 }
 ];
@@ -256,6 +301,7 @@ function bumpCrate(tx,ty){
   k.used = true; k.bump = 10;
   grid[ty][tx]='U'; sgrid[ty][tx]='U';
   burst(k.x+T/2, k.y, C.star, 10);
+  stars.push({x:k.x+T/2, y:k.y-14, got:false, t:0});   // popped star floats above the crate
   sfx.crate();
   return true;
 }
@@ -275,6 +321,7 @@ function startGame(){
   buildLevel(levelIdx);
   respawn(true);
   state='play';
+  startMusic();          // music starts here, inside the user-gesture handler
 }
 function respawn(full){
   player.x = spawns[0].x; player.y = spawns[0].y;
@@ -282,6 +329,7 @@ function respawn(full){
   // revive crates+stars on death so level stays fair
   if(!full){
     buildLevel(levelIdx);
+    player.stars = 0;                    // stars come back, so the counter resets too
     player.x = spawns[0].x; player.y = spawns[0].y;
   }
 }
@@ -370,6 +418,11 @@ function update(dt){
       moveRect(e,dt);
       if(wasAir&&e.onGround) e.squash=6; else if(e.squash) e.squash*=Math.pow(.85,dt);
       if(e.hitWall) e.vx = e.vx>0? -1.1 : 1.1;
+      // turn at ledges so grumps don't walk off into pits
+      if(e.onGround && !e.hitWall){
+        const ax = e.vx>0 ? e.x+e.w+2 : e.x-2;
+        if(!hitSolid(tileAt(Math.floor(ax/T), Math.floor((e.y+e.h+4)/T)))) e.vx = -e.vx;
+      }
     } else { // bee: sine bob + horizontal patrol
       e.x += e.vx*dt;
       e.y = e.base + Math.sin(e.t*.7)*22;
@@ -387,9 +440,9 @@ function update(dt){
     }
   }
 
-  // spikes
-  const pcx = Math.floor((player.x+player.w/2)/T), pby = Math.floor((player.y+player.h-4)/T);
-  if(tileAt(pcx,pby)==='^' || tileAt(pcx, Math.floor((player.y+player.h)/T))==='^') hurt();
+  // spikes (8px forgiveness inset so grazed landings don't count)
+  const pcx = Math.floor((player.x+player.w/2)/T), pby = Math.floor((player.y+player.h-8)/T);
+  if(tileAt(pcx,pby)==='^') hurt();
 
   // fall in pit
   if(player.y > gh*T + 80) hurt();
