@@ -9,13 +9,13 @@
 <meta property="og:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hafiy.my/kracked-quest/">
-<meta property="og:image" content="https://hafiy.my/kracked-quest/og-card.png">
+<meta property="og:image" content="https://hafiy.my/kracked-quest/og-card.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kracked Quest">
 <meta name="twitter:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
-<meta name="twitter:image" content="https://hafiy.my/kracked-quest/og-card.png">
+<meta name="twitter:image" content="https://hafiy.my/kracked-quest/og-card.png?v=2">
 <style>
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
@@ -48,7 +48,9 @@ const T = 48;                       // tile size
 /* ---------- fit canvas to window (native resolution, no blur) ---------- */
 let RS = 1;                          // render scale: css scale × devicePixelRatio
 function fit(){
-  const s = Math.min(innerWidth/VW, innerHeight/VH);
+  const w = innerWidth  || VW;       // hidden panes report 0 — fall back to native size
+  const h = innerHeight || VH;
+  const s = Math.min(w/VW, h/VH);
   const dpr = Math.min(devicePixelRatio || 1, 2);
   cv.style.width  = (VW*s)+'px';
   cv.style.height = (VH*s)+'px';
@@ -56,7 +58,9 @@ function fit(){
   cv.height = Math.max(1, Math.round(VH*s*dpr));
   RS = dpr*s;
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', fit);
+document.addEventListener('visibilitychange', fit);
+fit();
 
 /* ---------- input ---------- */
 const keys = {};
