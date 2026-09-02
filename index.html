@@ -804,6 +804,29 @@ function drawBee(e){
 }
 
 /* ----- HUD & screens ----- */
+function drawCatHead(x,y,r){
+  // ears (behind the head, tips poke above it) with pink inner ears
+  for(const s of [-1,1]){
+    const ex = x + s*r*.55;
+    ctx.beginPath();
+    ctx.moveTo(ex-r*.38, y-r*.35); ctx.lineTo(ex, y-r*1.4); ctx.lineTo(ex+r*.38, y-r*.35);
+    ctx.closePath();
+    ctx.fillStyle=C.hero; ctx.fill(); ink(3); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ex-r*.18, y-r*.62); ctx.lineTo(ex, y-r*1.15); ctx.lineTo(ex+r*.18, y-r*.62);
+    ctx.closePath(); ctx.fillStyle='#f7b1c0'; ctx.fill();
+  }
+  ctx.beginPath(); ctx.arc(x,y,r,0,7);
+  ctx.fillStyle=C.hero; ctx.fill(); ink(3.5); ctx.stroke();
+  // eyes + nose
+  ctx.fillStyle=INK;
+  ctx.beginPath(); ctx.arc(x-r*.28, y-r*.05, r*.16, 0, 7); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+r*.28, y-r*.05, r*.16, 0, 7); ctx.fill();
+  ctx.fillStyle='#f7b1c0';
+  ctx.beginPath();
+  ctx.moveTo(x-r*.1, y+r*.3); ctx.lineTo(x+r*.1, y+r*.3); ctx.lineTo(x, y+r*.45);
+  ctx.closePath(); ctx.fill();
+}
 function drawHUD(){
   ctx.save();
   ctx.font='bold 26px "Comic Sans MS",sans-serif'; ctx.textBaseline='middle';
@@ -811,8 +834,8 @@ function drawHUD(){
   star(38,38,15,Date.now()/900,C.star,4);
   ctx.fillStyle=INK; ctx.textAlign='left';
   ctx.fillText('× '+player.stars+' / '+stars.length, 62, 40);
-  // lives
-  for(let i=0;i<player.lives;i++) blob(70+i*40, 86, 12, C.hero, 4);
+  // lives: mini cat heads
+  for(let i=0;i<player.lives;i++) drawCatHead(72+i*44, 88, 13);
   // level + time
   ctx.textAlign='center';
   ctx.fillStyle=INK;
