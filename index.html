@@ -431,7 +431,7 @@ function update(dt){
 
   // enemies
   for(const e of enemies){
-    if(e.dead>0){ e.dead-=dt; continue; }
+    if(e.gone){ e.dead = Math.max(0, e.dead-dt); continue; }   // stomped: gone for good
     e.t += .1*dt;
     if(e.type==='grump'){
       e.bounce=true;
@@ -455,7 +455,7 @@ function update(dt){
        player.y < e.y+e.h && player.y+player.h > e.y){
       const stomping = player.vy>1 && (player.y+player.h) - e.y < 20;
       if(stomping){
-        e.dead=30; sfx.stomp(); burst(e.x+e.w/2,e.y+e.h/2, e.type==='grump'?C.grump:C.bee, 12);
+        e.gone = true; e.dead = 30; sfx.stomp(); burst(e.x+e.w/2,e.y+e.h/2, e.type==='grump'?C.grump:C.bee, 12);
         player.vy = -9; shake=6;
       } else hurt();
     }
@@ -525,10 +525,13 @@ function render(){
   // enemies
   for(const e of enemies){
     if(e.x<camX-80||e.x>camX+VW+80) continue;
-    if(e.dead>0){ // poof
-      ctx.globalAlpha = e.dead/30;
-      blob(e.x+e.w/2, e.y+e.h/2 - (30-e.dead)*.6, 16+(30-e.dead)*.3, '#ffffff', 4);
-      ctx.globalAlpha=1; continue;
+    if(e.gone){ // fading poof, then nothing
+      if(e.dead>0){
+        ctx.globalAlpha = e.dead/30;
+        blob(e.x+e.w/2, e.y+e.h/2 - (30-e.dead)*.6, 16+(30-e.dead)*.3, '#ffffff', 4);
+        ctx.globalAlpha=1;
+      }
+      continue;
     }
     if(e.type==='grump') drawGrump(e); else drawBee(e);
   }
