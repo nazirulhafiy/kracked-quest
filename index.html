@@ -736,32 +736,28 @@ function drawPlayer(){
   for(const sx of [-4, 2, 8]){
     ctx.beginPath(); ctx.moveTo(sx, -h-1); ctx.lineTo(sx-1, -h+7); ctx.stroke();
   }
-  // face
-  const ey = -h*.62;
+  // face — same layout as the title portrait: high eyes, small nose, no mouth
+  const ey = -h*.73;
   if(p.blink>0){
     ink(3);
-    ctx.beginPath(); ctx.moveTo(4,ey); ctx.lineTo(11,ey); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(15,ey); ctx.lineTo(22,ey); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-1,ey); ctx.lineTo(5,ey); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(9,ey); ctx.lineTo(15,ey); ctx.stroke();
   } else {
     ctx.fillStyle=INK;
-    ctx.beginPath(); ctx.arc(7,ey,3,0,7); ctx.fill();
-    ctx.beginPath(); ctx.arc(19,ey,3,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(2,ey,3,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(12,ey,3,0,7); ctx.fill();
   }
-  // cheek blush, cat nose + mouth
+  // pink nose, just above the shirt neckline
   ctx.fillStyle='#f7b1c0';
-  ctx.beginPath(); ctx.arc(-3,ey+9,4,0,7); ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(11,ey+2); ctx.lineTo(17,ey+2); ctx.lineTo(14,ey+6);
+  ctx.moveTo(4,ey+3); ctx.lineTo(10,ey+3); ctx.lineTo(7,ey+6.5);
   ctx.closePath(); ctx.fill(); ink(2.5); ctx.stroke();
+  // whiskers, starting at the cheeks and poking past the silhouette
   ink(2.5);
-  ctx.beginPath(); ctx.arc(12,ey+8,3,.2,Math.PI*.9); ctx.stroke();
-  ctx.beginPath(); ctx.arc(17,ey+8,3,.1,Math.PI*.8); ctx.stroke();
-  // whiskers
-  ink(2.5);
-  ctx.beginPath(); ctx.moveTo(22,ey+4); ctx.lineTo(33,ey+1); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(22,ey+9); ctx.lineTo(33,ey+10); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-9,ey+5); ctx.lineTo(-18,ey+2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(-9,ey+10); ctx.lineTo(-18,ey+11); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(13,ey+3); ctx.lineTo(24,ey); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(13,ey+8); ctx.lineTo(24,ey+9); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-13,ey+3); ctx.lineTo(-24,ey); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-13,ey+8); ctx.lineTo(-24,ey+9); ctx.stroke();
   ctx.restore();
 }
 function drawGrump(e){
