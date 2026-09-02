@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Kracked Quest — a tiny doodle platformer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
+<meta property="og:title" content="Kracked Quest">
+<meta property="og:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hafiy.my/kracked-quest/">
+<meta property="og:image" content="https://hafiy.my/kracked-quest/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kracked Quest">
+<meta name="twitter:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
+<meta name="twitter:image" content="https://hafiy.my/kracked-quest/og-card.png">
 <style>
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
@@ -33,11 +45,16 @@ const ctx = cv.getContext('2d');
 const VW = 960, VH = 540;
 const T = 48;                       // tile size
 
-/* ---------- fit canvas to window ---------- */
+/* ---------- fit canvas to window (native resolution, no blur) ---------- */
+let RS = 1;                          // render scale: css scale × devicePixelRatio
 function fit(){
   const s = Math.min(innerWidth/VW, innerHeight/VH);
+  const dpr = Math.min(devicePixelRatio || 1, 2);
   cv.style.width  = (VW*s)+'px';
   cv.style.height = (VH*s)+'px';
+  cv.width  = Math.max(1, Math.round(VW*s*dpr));
+  cv.height = Math.max(1, Math.round(VH*s*dpr));
+  RS = dpr*s;
 }
 addEventListener('resize', fit); fit();
 
@@ -464,6 +481,7 @@ function update(dt){
    RENDER — everything drawn doodle-style, thick ink outlines
    ============================================================ */
 function render(){
+  ctx.setTransform(RS,0,0,RS,0,0);   // draw everything at native display resolution
   ctx.save();
   const sx = shake>0 ? (Math.random()-.5)*shake : 0;
   const sy = shake>0 ? (Math.random()-.5)*shake : 0;
@@ -814,11 +832,11 @@ function drawTitle(){
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillStyle=INK;
   ctx.font='bold 58px "Comic Sans MS",sans-serif';
+  star(VW/2-262, y+90, 20, Date.now()/600, C.star, 5);
+  star(VW/2+262, y+90, 20, -Date.now()/600, C.star, 5);
   ctx.fillText('KRAKED QUEST', VW/2, y+90);
   ctx.font='bold 22px "Comic Sans MS",sans-serif';
   ctx.fillText('a doodle platformer', VW/2, y+134);
-  star(VW/2-230, y+90, 22, Date.now()/600, C.star, 5);
-  star(VW/2+230, y+90, 22, -Date.now()/600, C.star, 5);
   // cat portrait
   ctx.save(); ctx.translate(VW/2, y+212); ctx.scale(1.4,1.4);
   blob(-10,22,7,C.foot,4); blob(10,22,7,C.foot,4);
