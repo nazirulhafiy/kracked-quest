@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>PIPKIN QUEST — a tiny doodle platformer</title>
+<title>Kracked Quest — a tiny doodle platformer</title>
 <style>
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
@@ -125,7 +125,7 @@ function doodleDash(x,y,len,color){            // little accent dashes inside fi
 const C = {
   sky:'#79c3f2', dirt:'#e2949b', grass:'#63bfae', cloud:'#ffffff',
   crate:'#f2b134', crateSide:'#d98a2b', used:'#c9b8a0',
-  star:'#ffd23e', hero:'#f7a65a', heroBelly:'#ffe9cf', foot:'#ffe9cf', leaf:'#5cb85c',
+  star:'#ffd23e', hero:'#b9bfc7', heroBelly:'#fbf6ec', foot:'#fbf6ec', leaf:'#5cb85c',
   grump:'#ef8fa4', bee:'#ffd23e', spike:'#eef3f5', flag:'#63bfae'
 };
 
@@ -654,7 +654,7 @@ function drawPlayer(){
     ctx.fillStyle='#f7b1c0'; ctx.fill();
   }
   // tabby stripes on the forehead
-  ctx.strokeStyle='#dd8a3f'; ctx.lineWidth=3.5; ctx.lineCap='round';
+  ctx.strokeStyle='#878e98'; ctx.lineWidth=3.5; ctx.lineCap='round';
   for(const sx of [-4, 2, 8]){
     ctx.beginPath(); ctx.moveTo(sx, -h-1); ctx.lineTo(sx-1, -h+7); ctx.stroke();
   }
@@ -761,7 +761,7 @@ function drawTitle(){
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillStyle=INK;
   ctx.font='bold 58px "Comic Sans MS",sans-serif';
-  ctx.fillText('PIPKIN QUEST', VW/2, y+90);
+  ctx.fillText('KRAKED QUEST', VW/2, y+90);
   ctx.font='bold 22px "Comic Sans MS",sans-serif';
   ctx.fillText('a doodle platformer', VW/2, y+134);
   star(VW/2-230, y+90, 22, Date.now()/600, C.star, 5);
@@ -807,7 +807,7 @@ function drawTitle(){
     ctx.moveTo(ex-3,-17); ctx.lineTo(ex,-24); ctx.lineTo(ex+3,-17);
     ctx.closePath(); ctx.fillStyle='#f7b1c0'; ctx.fill();
   }
-  ctx.strokeStyle='#dd8a3f'; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.strokeStyle='#878e98'; ctx.lineWidth=3; ctx.lineCap='round';
   for(const sx of [-4, 2, 8]){
     ctx.beginPath(); ctx.moveTo(sx,-16); ctx.lineTo(sx-1,-9); ctx.stroke();
   }

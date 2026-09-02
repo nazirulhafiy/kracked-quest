@@ -1,4 +1,4 @@
-# 🐱 Pipkin Quest
+# 🐱 Kracked Quest
 
 A tiny 2D platformer in a chunky doodle art style — same classic concept
 (run, jump, stomp, collect, reach the flag), original designs.
