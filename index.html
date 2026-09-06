@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+(function(){
+  var h = location.hostname;
+  if ((h === 'hafiy.my' || h === 'nazirulhafiy.github.io') && location.pathname.indexOf('/kracked-quest') === 0) {
+    location.replace('https://polah.app' + location.pathname + location.search + location.hash);
+  }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Kracked Quest — a tiny doodle platformer</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
@@ -16,14 +24,6 @@
 <meta name="twitter:title" content="Kracked Quest">
 <meta name="twitter:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
 <meta name="twitter:image" content="https://polah.app/kracked-quest/og-card.png?v=2">
-<script>
-(function(){
-  var h = location.hostname;
-  if ((h === 'hafiy.my' || h === 'nazirulhafiy.github.io') && location.pathname.indexOf('/kracked-quest') === 0) {
-    location.replace('https://polah.app' + location.pathname + location.search + location.hash);
-  }
-})();
-</script>
 <style>
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
