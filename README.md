@@ -7,8 +7,11 @@ Starring **Pipkin**, a tabby cat in a red Kelantan shirt with gold batik motifs.
 
 ## Play
 
-Open https://hafiy.my/kracked-quest/ — that's it. No build step,
+Open https://polah.app/kracked-quest/ — that's it. No build step,
 no dependencies; everything is drawn in code on a single HTML canvas.
+
+The GitHub repo **Website** field (About → Website) is not stored in git.
+Set it to `https://polah.app/kracked-quest/` in the GitHub UI.
 
 ## Controls
 
