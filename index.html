@@ -34,21 +34,23 @@
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
   canvas{image-rendering:auto;touch-action:none;}
-  #touch{position:fixed;inset:auto 0 0 0;height:170px;display:none;justify-content:space-between;align-items:flex-end;padding:0 20px 22px;box-sizing:border-box;pointer-events:none;z-index:5;}
-  .tbtn{pointer-events:auto;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.88);border:5px solid #1a1a1a;
-        font-size:28px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;
-        font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
-  .joy{pointer-events:auto;position:relative;width:128px;height:128px;border-radius:50%;background:rgba(255,255,255,.55);border:5px solid #1a1a1a;
-       touch-action:none;user-select:none;-webkit-user-select:none;}
-  .joy-knob{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
-            background:rgba(255,255,255,.95);border:5px solid #1a1a1a;box-shadow:3px 3px 0 #1a1a1a;pointer-events:none;}
+  #touch{position:fixed;inset:auto 0 0 0;height:150px;display:none;justify-content:space-between;align-items:flex-end;padding:0 24px 24px;box-sizing:border-box;pointer-events:none;z-index:5;}
+  .tbtn{pointer-events:auto;width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.88);border:5px solid #1a1a1a;
+        box-shadow:3px 3px 0 #1a1a1a;font-size:34px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;justify-content:center;
+        user-select:none;-webkit-user-select:none;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;
+        -webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .tbtn.jump{font-size:18px;letter-spacing:.04em;}
+  .tgroup{display:flex;gap:18px;align-items:flex-end;}
 </style>
 </head>
 <body>
 <div id="wrap"><canvas id="cv" width="960" height="540"></canvas></div>
 <div id="touch">
-  <div class="joy" id="joy" aria-label="move"><div class="joy-knob" id="joyKnob"></div></div>
-  <div class="tbtn" id="bj">JUMP</div>
+  <div class="tgroup" aria-label="move">
+    <div class="tbtn" id="bl" aria-label="left">←</div>
+    <div class="tbtn" id="br" aria-label="right">→</div>
+  </div>
+  <div class="tgroup"><div class="tbtn jump" id="bj">JUMP</div></div>
 </div>
 <script>
 "use strict";
@@ -100,7 +102,7 @@ addEventListener('keydown', e=>{
 });
 addEventListener('keyup', e=>{ const k=KEYMAP[e.key]; if(k) keys[k]=false; });
 
-/* touch controls — horizontal joystick + JUMP (touch devices only) */
+/* touch controls — ← → + JUMP pads (touch devices only) */
 let touchL=false, touchR=false;
 const isTouchUI = ('ontouchstart' in window) || (navigator.maxTouchPoints>0);
 function bindTouch(id, down, up){
@@ -114,62 +116,12 @@ function bindTouch(id, down, up){
   el.addEventListener('mouseup', end);
   el.addEventListener('mouseleave', end);
 }
+bindTouch('bl', ()=>{ touchL=true; }, ()=>{ touchL=false; });
+bindTouch('br', ()=>{ touchR=true; }, ()=>{ touchR=false; });
 bindTouch('bj', ()=>{
   if(state!=='play'){ onStartKey(); return; }
   jumpBuf=8; keys.jump=true;
 }, ()=>{ keys.jump=false; });
-
-/* left virtual joystick (horizontal only) */
-(function setupJoy(){
-  const joy = document.getElementById('joy');
-  const knob = document.getElementById('joyKnob');
-  const MAX = 38;          // px travel
-  const DEAD = 10;         // px deadzone
-  let active = false, pid = null;
-  function setKnob(dx, dy){
-    const mag = Math.hypot(dx, dy) || 1;
-    // horizontal bias: squash vertical so it feels like a side-scroller stick
-    let x = dx, y = dy * 0.25;
-    const m = Math.hypot(x, y);
-    if(m > MAX){ x = x/m*MAX; y = y/m*MAX; }
-    knob.style.transform = 'translate('+x+'px,'+y+'px)';
-    touchL = x < -DEAD; touchR = x > DEAD;
-  }
-  function reset(){
-    active=false; pid=null; touchL=false; touchR=false;
-    knob.style.transform='translate(0px,0px)';
-  }
-  function posFromEvent(e){
-    const t = (e.changedTouches && e.changedTouches[0]) || (e.touches && e.touches[0]) || e;
-    const r = joy.getBoundingClientRect();
-    return { x: t.clientX - (r.left+r.width/2), y: t.clientY - (r.top+r.height/2) };
-  }
-  function onDown(e){
-    e.preventDefault();
-    active=true;
-    if(e.pointerId!=null) pid=e.pointerId;
-    const p = posFromEvent(e); setKnob(p.x, p.y);
-  }
-  function onMove(e){
-    if(!active) return;
-    if(pid!=null && e.pointerId!=null && e.pointerId!==pid) return;
-    e.preventDefault();
-    const p = posFromEvent(e); setKnob(p.x, p.y);
-  }
-  function onUp(e){
-    if(pid!=null && e.pointerId!=null && e.pointerId!==pid) return;
-    e.preventDefault(); reset();
-  }
-  joy.addEventListener('pointerdown', onDown);
-  addEventListener('pointermove', onMove, {passive:false});
-  addEventListener('pointerup', onUp);
-  addEventListener('pointercancel', onUp);
-  joy.addEventListener('touchstart', onDown, {passive:false});
-  joy.addEventListener('touchmove', onMove, {passive:false});
-  joy.addEventListener('touchend', onUp, {passive:false});
-  joy.addEventListener('touchcancel', onUp, {passive:false});
-})();
-
 if(isTouchUI) document.getElementById('touch').style.display='flex';
 
 /* tap canvas / title panel to start (mobile + desktop click) */
@@ -639,7 +591,7 @@ function render(){
   if(state==='play'||state==='clear') drawHUD();
   if(state==='title') drawTitle();
   if(state==='clear') drawClear();
-  if(state==='gameover') drawOverlay('GAME OVER','TAP  or  ENTER  to try again');
+  if(state==='gameover') drawOverlay('GAME OVER','Tap to try again');
   if(state==='win') drawWin();
 
   if(muted){
@@ -1014,7 +966,7 @@ function drawTitle(){
   ctx.fillText('ARROWS / WASD  to move   ·   SPACE to jump', VW/2, y+278);
   ctx.fillText('stomp the grumps · grab the stars · reach the flag!', VW/2, y+306);
   ctx.font='bold 26px "Comic Sans MS",sans-serif';
-  ctx.fillText('TAP  OR  ENTER  TO START', VW/2, y+338+bob);
+  ctx.fillText('Tap to Start', VW/2, y+338+bob);
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 }
 function drawClear(){
@@ -1026,7 +978,7 @@ function drawClear(){
   ctx.font='bold 24px "Comic Sans MS",sans-serif';
   ctx.fillText('stars: '+player.stars+' / '+stars.length+'    ·    lives: '+player.lives, VW/2, y+134);
   const bob=Math.sin(Date.now()/250)*4;
-  ctx.fillText('TAP  OR  ENTER  FOR THE NEXT AREA', VW/2, y+190+bob);
+  ctx.fillText('Tap for next area', VW/2, y+190+bob);
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 }
 function drawWin(){
@@ -1041,7 +993,7 @@ function drawWin(){
   ctx.fillText('Pipkin naps on the top of the world.', VW/2, y+134);
   ctx.fillText('Total stars: '+player.stars, VW/2, y+168);
   const bob=Math.sin(Date.now()/250)*4;
-  ctx.fillText('TAP  OR  ENTER  FOR TITLE', VW/2, y+236+bob);
+  ctx.fillText('Tap for title', VW/2, y+236+bob);
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 }
 function drawOverlay(big, small){
