@@ -5,9 +5,14 @@
 <script>
 (function(){
   var h = location.hostname;
-  if ((h === 'hafiy.my' || h === 'nazirulhafiy.github.io') && location.pathname.indexOf('/kracked-quest') === 0) {
-    location.replace('https://polah.app' + location.pathname + location.search + location.hash);
+  if (h !== 'hafiy.my' && h !== 'nazirulhafiy.github.io') return;
+  var path = location.pathname;
+  if (path === '/kracked-quest' || path.indexOf('/kracked-quest/') === 0) {
+    path = path.replace(/^\/kracked-quest/, '/kracked') || '/kracked/';
+  } else if (path !== '/kracked' && path.indexOf('/kracked/') !== 0) {
+    return;
   }
+  location.replace('https://polah.app' + path + location.search + location.hash);
 })();
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,14 +21,15 @@
 <meta property="og:title" content="Kracked Quest">
 <meta property="og:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://polah.app/kracked-quest/">
-<meta property="og:image" content="https://polah.app/kracked-quest/og-card.png?v=2">
+<link rel="canonical" href="https://polah.app/kracked/">
+<meta property="og:url" content="https://polah.app/kracked/">
+<meta property="og:image" content="https://polah.app/kracked/og-card.png?v=3">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kracked Quest">
 <meta name="twitter:description" content="A doodle-style 2D platformer: run, jump, stomp the grumps, grab the stars, reach the flag!">
-<meta name="twitter:image" content="https://polah.app/kracked-quest/og-card.png?v=2">
+<meta name="twitter:image" content="https://polah.app/kracked/og-card.png?v=3">
 <style>
   html,body{margin:0;padding:0;background:#79c3f2;height:100%;overflow:hidden;font-family:'Comic Sans MS','Chalkboard SE',sans-serif;}
   #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
