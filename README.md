@@ -7,11 +7,11 @@ Starring **Pipkin**, a tabby cat in a red Kelantan shirt with gold batik motifs.
 
 ## Play
 
-Open https://polah.app/kracked-quest/ — the only public URL. No build
+Open https://polah.app/kracked/ — the only public URL (Cloudflare rewrites to origin `/kracked-quest/`; old `/kracked-quest` redirects). No build
 step, no dependencies; everything is drawn in code on a single HTML canvas.
 
 The GitHub repo **Website** field (About → Website) is not stored in git.
-Set it to `https://polah.app/kracked-quest/` in the GitHub UI.
+Set it to `https://polah.app/kracked/` in the GitHub UI.
 
 ## Controls
 
