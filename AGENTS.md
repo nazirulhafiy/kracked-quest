@@ -1,58 +1,47 @@
-<!-- template: AGENTS.md v1 -->
 # AGENTS.md
 
-## What it is
+Kracked Quest is a single-file browser platformer: game logic, levels (ASCII maps), and doodle art live in `index.html` on a 960×540 canvas. There is no build step, package manager, or backend.
 
-Kracked Quest is a single-file browser platformer: all game logic and doodle art live in `index.html` on a
-960×540 canvas. There is no build step, package manager, or backend. It ships as static files on GitHub Pages
-and is served on the public web through the POLAH proxy at `https://polah.app/kracked/`.
+## Docs rule
+
+Design or behaviour changes (CSS, templates, app JS, build scripts, config) must update `docs/` (usually `docs/design.md`) in the same PR. Use the `no-docs-needed` label only for changes that truly need no docs.
+
+Pull requests run the **docs-check** workflow on watched design/behaviour paths. See [docs/ci-docs-check.md](docs/ci-docs-check.md).
 
 ## Sources of truth
 
-| Question | Document |
+| Topic | Document |
 | --- | --- |
 | Visual style, palette, layout | [docs/design.md](docs/design.md) |
-| How to run and deploy | [README.md](README.md) |
+| Local run, hosting, deploy | [README.md](README.md) |
+| CI watched paths | [docs/ci-docs-check.md](docs/ci-docs-check.md) |
 
-**Docs rule:** Read this file, then the document the task touches (especially [docs/design.md](docs/design.md)).
-If the docs and the code disagree, fix the docs first and say so in the pull request.
+If docs and code disagree, fix the docs to match the code (or update both in the same PR) and say so in the pull request.
 
-Organization handbook:
-https://github.com/yangflow-repopro/.github/tree/main/handbook — rules for AI collaborators:
-https://github.com/yangflow-repopro/.github/blob/main/handbook/core/agents.md
-
-## Directory boundaries
+## Layout
 
 | Path | Role |
 | --- | --- |
-| `index.html` | Entire game: levels (ASCII maps), rendering, input, audio |
-| `og-card.png` | Open Graph / social preview image |
-| `docs/` | Design and other context docs |
-| `.github/workflows/` | CI (documentation compliance) |
+| `index.html` | Entire game and inline styles |
+| `og-card.png` | Open Graph preview image |
+| `docs/` | Design and CI documentation |
 
-Do not split the game across modules unless the maintainer asks; the point of this repository is one file to
-open and play.
+Keep the game in one HTML file unless the maintainer asks to split it.
 
 ## Commands
 
-| Command | Purpose |
-| --- | --- |
-| `python3 -m http.server 8000` | Local preview at `http://localhost:8000/` (no build) |
-| `python3 .org/scripts/check-docs.py .` | Same documentation check CI runs (after checking out the org handbook to `.org`) |
+```bash
+python3 -m http.server 8000   # local preview at http://localhost:8000/
+```
 
-CI on pull requests and `main` runs the reusable **Docs check** workflow (`.github/workflows/docs.yml`).
+Run the docs check locally (after `fetch-depth` history is available):
 
-## Project rules
+```bash
+BASE_SHA=<base> HEAD_SHA=<head> python3 scripts/docs_check_pr.py
+```
 
-- Keep the game playable with no build step and no production dependencies.
-- Level data stays as ASCII maps at the top of `index.html` unless the maintainer moves them.
-- Touch controls must keep working on mobile; test narrow viewports when changing input UI.
-- Canonical public URL is `https://polah.app/kracked/`; legacy hosts redirect via the script in `index.html`.
-- When changing colors, typography, or HUD chrome, update [docs/design.md](docs/design.md) in the same pull
-  request.
+## Notes
 
-## Red lines
-
-Credentials never appear in pull requests, issues, logs, reports, or chat. Signing, release, and anything sent
-to an external service need the maintainer's confirmation. No blind staging (`git add -A`). See
-https://github.com/yangflow-repopro/.github/blob/main/handbook/core/agents.md
+- Public entry: [https://polah.app/kracked-quest/](https://polah.app/kracked-quest/) (Cloudflare); the game may redirect to `/kracked/` on that host — see `index.html` and README.
+- Touch controls must keep working on mobile when changing input UI.
+- No environment variables are required for local play or GitHub Pages deploy.

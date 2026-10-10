@@ -1,39 +1,40 @@
-<!-- template: website/README.md v1 -->
-# Kracked Quest website
+# Kracked Quest
 
-A tiny 2D platformer in a chunky doodle art style — run, jump, stomp grumps, collect stars, reach the flag.
-Starring **Pipkin**, a tabby cat in a red Kelantan shirt with gold batik motifs.
+A tiny 2D platformer in a chunky doodle art style — run, jump, stomp grumps, collect stars, reach the flag. Starring **Pipkin**, a tabby cat in a red Kelantan shirt with gold batik motifs.
 
-**Play:** [https://polah.app/kracked/](https://polah.app/kracked/) (short public URL on POLAH; `/kracked-quest` on
-that host redirects here).
+**Play:** [https://polah.app/kracked-quest/](https://polah.app/kracked-quest/) (served through Cloudflare on `polah.app`; the game redirects that path to `/kracked/` on the same host).
 
-## Deploy
+## Run locally
 
-This repository is a **static site** with no build step. Deployment is **GitHub Pages** from the `main` branch
-(root directory):
-
-| Layer | What happens |
-| --- | --- |
-| **Origin** | GitHub Pages serves `index.html`, `og-card.png`, and other tracked files at `https://hafiy.my/kracked-quest/` (and the default `*.github.io` project URL). |
-| **Public URL** | **Cloudflare** in front of `polah.app` rewrites `/kracked/` to that GitHub Pages origin path (`/kracked-quest/`). Requests to `https://polah.app/kracked-quest/` redirect to `/kracked/`. |
-| **This repo** | No Wrangler, Vercel, or deploy workflow here — pushing to `main` updates what Pages serves. |
-
-Set the GitHub repository **Website** field (About → Website) to `https://polah.app/kracked/` in the GitHub
-UI (not stored in git).
-
-## Work on it
-
-**Run locally (no build):** from the repository root:
+No build step and no dependencies. From the repository root:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Open [http://localhost:8000/](http://localhost:8000/). Edit `index.html` and refresh.
+Open [http://localhost:8000/](http://localhost:8000/), edit `index.html`, and refresh.
 
-**Documentation check (same as CI):** see [AGENTS.md](AGENTS.md#commands).
+Other static servers work too (`npx serve`, `php -S localhost:8000`, etc.) as long as they serve the repo root.
 
-### Controls
+## Build
+
+There is no build step. The shipped site is the committed static files (`index.html`, `og-card.png`, …).
+
+## Deploy and hosting
+
+| Layer | What happens |
+| --- | --- |
+| **This repo** | No deploy workflow, Wrangler, or Vercel config — push to `main` is the release. |
+| **Origin** | **GitHub Pages** serves the repository root from `main` (e.g. `hafiy.my/kracked-quest/` and the default `*.github.io` project URL). |
+| **Public URL** | **Cloudflare** in front of `polah.app` proxies `/kracked-quest/` and rewrites `/kracked/` to the GitHub Pages origin path. |
+
+Environment variables: none required for play or Pages hosting.
+
+## Documentation CI
+
+Pull requests run **docs-check** on design/behaviour paths; see [docs/ci-docs-check.md](docs/ci-docs-check.md). Agent instructions: [AGENTS.md](AGENTS.md).
+
+## Controls
 
 | Action | Keys |
 | --- | --- |
@@ -45,28 +46,9 @@ Open [http://localhost:8000/](http://localhost:8000/). Edit `index.html` and ref
 
 Touch controls appear automatically on mobile.
 
-### Levels
+## Levels
 
-1. **Sunny Slopes** — gentle hills, pits and grumps
-2. **Cloudtop Climb** — towers, bees and spike beds
+1. **Sunny Slopes** — gentle hills, pits and grumps  
+2. **Cloudtop Climb** — towers, bees and spike beds  
 
-Levels are plain ASCII maps at the top of `index.html` — easy to add more.
-
-## Pages
-
-| Page | Address | Copy source |
-| --- | --- | --- |
-| Game | `index.html` | Inline in `index.html` (title screen, HUD, level names) |
-| Social preview | `og-card.png` | Static image referenced from `<meta>` tags |
-
-## Languages
-
-None — English only.
-
-## Content sources
-
-None — no CMS or generated HTML; all player-facing copy is in `index.html`.
-
-## App dependencies
-
-None — no runtime packages. The game runs in the browser from the committed static files.
+Levels are ASCII maps at the top of `index.html`.
