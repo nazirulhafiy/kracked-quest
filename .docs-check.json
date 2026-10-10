@@ -1,0 +1,10 @@
+{
+  "pending": [
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "THIRD_PARTY.md",
+    "docs/content.md",
+    "docs/process.md",
+    "docs/adr/README.md"
+  ]
+}
