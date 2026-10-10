@@ -3,7 +3,7 @@
 # - *.css, *.js, *.mjs, *.ts, *.tsx, *.jsx (repo root)
 # - scripts/build.*, scripts/*build*
 # - vite.config.*, wrangler.toml, package.json
-name: docs check
+name: docs-check
 
 on:
   pull_request:
