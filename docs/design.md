@@ -32,3 +32,9 @@ Terrain, characters, and collectibles use additional fills in the canvas drawing
 - Tile grid: 48px (`T` in code); levels are ASCII character maps at the top of `index.html`.
 - Mobile: ~150px touch strip; play area stays above it.
 - Legacy host paths redirect to `https://polah.app/kracked/` via an inline script in `index.html`.
+
+## Analytics
+
+- Google Analytics 4: measurement ID `G-B3BZXWWDH9` (the shared polah.app property), tag in `<head>` of `index.html`. Served at polah.app/kracked-quest/.
+- Cloudflare Web Analytics: polah.app is proxied by Cloudflare with Web Analytics auto-install enabled, so the beacon is injected at the edge; no snippet in code.
+- No Content-Security-Policy is set; if one is added, allow `www.googletagmanager.com` and `*.google-analytics.com`.
